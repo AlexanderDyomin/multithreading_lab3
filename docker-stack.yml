@@ -1,0 +1,31 @@
+version: "3"
+services:
+  redis:
+    image: redis
+    networks:
+      - mynetwork
+  master:
+    image: dyomisasha96/master
+    ports:
+      - "5000:5000"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+    networks:
+      - mynetwork
+  worker:
+    image: dyomisasha96/worker
+    networks:
+      - mynetwork
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+
+networks:
+  mynetwork:
+
