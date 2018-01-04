@@ -3,12 +3,16 @@ import redis
 import zmq
 app = Flask(__name__)
 
+conn = redis.Redis('redis')
+if(int(conn.llen("fib")) == 0):
+    conn.rpush("fib", 2 ,1)
+
 @app.route('/')
 def index():
 	context = zmq.Context()
 	socket = context.socket(zmq.REQ)
 	socket.connect("tcp://worker:5555")
-	conn = redis.Redis('redis')
+	#conn = redis.Redis('redis')
 	x1 = conn.lindex("fib", 0)
 	fib1 = int(x1)
 	m = "Current Fibonacci num  = " + str(x1)
