@@ -3,20 +3,21 @@ import redis
 import zmq
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods = ['GET'])
 def index():
-    context = zmq.Context()
-    socket = context.socket(zmq.REQ)
-    socket.connect("tcp://worker:5555")
-    #conn = redis.Redis('redis')
     x1 = conn.lindex("fib", 0)
     fib1 = int(x1)
     m = "Current Fibonacci num  = " + str(x1)
+    return m
+
+@app.route('/', methods = ['POST'])
+def increment():
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://worker:5555")
     socket.send('next') # dumb message just to send to worker and make it work
     answer = socket.recv()
-    #conn.lset("fib", 0, curFib)
-    #conn.lset("fib", 1, fib1)
-    return m
+    return "incremented"
 
 if __name__ == "__main__":
     conn = redis.Redis('redis')

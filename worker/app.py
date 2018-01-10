@@ -5,7 +5,6 @@ def fib(conn):
     pipe = conn.pipeline()
     while 1:
         try:
-            # print("inside fib")
             pipe.watch("fib")
             x2 = pipe.lindex("fib", 1)
             x1 = pipe.lindex("fib", 0)
@@ -31,6 +30,5 @@ socket.bind("tcp://*:5555")
 conn = redis.Redis('redis')
 while True:
     mes = socket.recv() # recieved dumb message, time to work
-    # print("worker recieved signal from master")
     fib(conn)
     socket.send('done')
